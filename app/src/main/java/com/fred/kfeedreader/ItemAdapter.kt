@@ -12,36 +12,37 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ItemAdapter(val list: ArrayList<MainActivity.Item>, val context: Context) :
+class ItemAdapter(private val list: ArrayList<MainActivity.Item>, private val context: Context) :
     RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val titulo = view.findViewById<TextView>(R.id.titulo)
-        val autor = view.findViewById<TextView>(R.id.autor)
-        val data = view.findViewById<TextView>(R.id.data)
-        val imagem = view.findViewById<ImageView>(R.id.imagem)
-        val btnVerMais = view.findViewById<TextView>(R.id.btnVerMais)
+        val titulo: TextView = view.findViewById(R.id.titulo)
+        val autor: TextView = view.findViewById(R.id.autor)
+        val data: TextView = view.findViewById(R.id.data)
+        val imagem: ImageView = view.findViewById(R.id.imagem)
+        val btnVerMais: TextView = view.findViewById(R.id.btnVerMais)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val v = LayoutInflater.from(parent?.context).inflate(R.layout.item_list, parent, false)
-        val ivh = ItemViewHolder(v)
 
-        return ivh
+        return ItemViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = list[position]
 
-        holder?.titulo?.text = item.titulo
-        holder?.autor?.text = item.autor
-        holder?.data?.text =
+        holder.titulo.text = item.titulo
+        holder.autor.text = item.autor
+        holder.data.text =
             SimpleDateFormat("dd/MM/yy", Locale("pt", "BR")).format(Date(item.data))
-        holder?.btnVerMais?.setOnClickListener {
+        holder.btnVerMais.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, item.link)
             context.startActivity(intent)
 
         }
+
+        DownloadImageTask(holder.imagem).execute(item.imagem)
     }
 
     override fun getItemCount(): Int = list.size
